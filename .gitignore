@@ -1,0 +1,13 @@
+########## RPM.gitignore ##########
+
+**/BUILD
+**/BUILDROOT
+**/RPMS
+**/SRPMS
+
+# Ignore source archives
+*.tar.gz
+*.tar.xz
+
+# Ignore output from fedora-review CLI tool
+**/copr-build*

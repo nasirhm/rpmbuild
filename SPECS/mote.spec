@@ -1,15 +1,13 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from
-%distutils.sysconfig import get_python_lib; print (get_python_lib())")}
 %global srcname mote
 
 Name:           %{srcname}
 Version:        0.6.3
-Release:        4%{?dist}
+Release:        1%{?dist}
 Summary:        A MeetBot log wrangler, providing a user-friendly interface for Fedora's logs
 
 License:        GPLv2+
-URL:            https://github.com/nasirhm/mote
-Source0:        https://github.com/nasirhm/mote/archive/%{version}.tar.gz
+URL:            https://github.com/nasirhm/%{name}
+Source0:        %{URL}/archive/%{version}.tar.gz
 BuildArch:      noarch
 
 BuildRequires:  python3
@@ -67,20 +65,19 @@ rm -rf *.egg*
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%{__python3} setup.py install --skip-build --root $RPM_BUILD_ROOT
+python3 setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 # Install apache configuration file
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/
-install -m 644 files/mote.conf $RPM_BUILD_ROOT/%{_sysconfdir}/httpd/conf.d/mote.conf
+mkdir -p %{buildroot}/%{_sysconfdir}/httpd/conf.d/
+install -m 644 files/mote.conf %{buildroot}/%{_sysconfdir}/httpd/conf.d/mote.conf
 
 # Install mote configuration file
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/mote
-install -m 644 files/config.py $RPM_BUILD_ROOT/%{_sysconfdir}/mote/config.py
+mkdir -p %{buildroot}/%{_sysconfdir}/mote
+install -m 644 files/config.py %{buildroot}/%{_sysconfdir}/mote/config.py
 
 # Install mote wsgi file
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/mote
-install -m 644 files/mote.wsgi $RPM_BUILD_ROOT/%{_datadir}/mote/mote.wsgi
+mkdir -p %{buildroot}/%{_datadir}/mote
+install -m 644 files/mote.wsgi %{buildroot}/%{_datadir}/mote/mote.wsgi
 
 # Remove bundled font files
 rm -rf %{buildroot}/%{python_sitelib}/mote/static/fonts
@@ -89,25 +86,24 @@ rm -rf %{buildroot}/%{python_sitelib}/mote/static/fonts
 ln -s /usr/share/fonts/fontawesome %{buildroot}%{python_sitelib}/mote/static/fonts
 
 # systemd service file for fedmsg cache updater
-%{__mkdir_p} %{buildroot}%{_unitdir}
-%{__install} -pm644 files/mote-updater.service \
+mkdir -p %{buildroot}%{_unitdir}
+install -pm644 files/mote-updater.service \
     %{buildroot}%{_unitdir}/mote-updater.service
 
 %files
 %doc README.md
-%{!?_licensedir:%global license %doc}
 %license LICENSE
-%dir %{_sysconfdir}/mote/
+%dir %{_sysconfdir}/%{name}/
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/mote.conf
 %config(noreplace) %{_sysconfdir}/mote/config.py
 %config(noreplace) %{_sysconfdir}/mote/config.pyc
 %config(noreplace) %{_sysconfdir}/mote/config.pyo
-%{_datadir}/mote
+%{_datadir}/%{name}
 %{_datadir}/mote-updater.service
-%{python_sitelib}/mote/
+%{python_sitelib}/%{name}/
 %{python_sitelib}/mote*.egg-info
 %{_bindir}/mote-updater
 
 %changelog
-* Mon Dec  7 2020 nasirhm <nasirhussainm14@gmail.com>
+* Mon Dec  7 2020 nasirhm <nasirhussainm14@gmail.com> - 0.6.3-1
 - Initialized

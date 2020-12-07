@@ -86,7 +86,7 @@ install -m 644 files/mote.wsgi $RPM_BUILD_ROOT/%{_datadir}/mote/mote.wsgi
 rm -rf %{buildroot}/%{python_sitelib}/mote/static/fonts
 
 # Symlink font files
-#ln -s /usr/share/fonts/fontawesome %{buildroot}%{python_sitelib}/mote/static/fonts
+ln -s /usr/share/fonts/fontawesome %{buildroot}%{python_sitelib}/mote/static/fonts
 
 # systemd service file for fedmsg cache updater
 %{__mkdir_p} %{buildroot}%{_unitdir}

@@ -1,7 +1,7 @@
 %global srcname mote
 
 Name:           %{srcname}
-Version:        0.6.3
+Version:        0.6.4
 Release:        1%{?dist}
 Summary:        A MeetBot log wrangler, providing a user-friendly interface for Fedora's logs
 
@@ -27,6 +27,8 @@ BuildRequires:  python3-beautifulsoup4
 BuildRequires:  python3-six
 BuildRequires:  python3-arrow
 BuildRequires:  fedmsg
+BuildRequires:  fontawesome-fonts
+BuildRequires:  fontawesome-fonts-web
 
 # For rpm macros, so we know where to install the service file.
 BuildRequires:  systemd
@@ -61,11 +63,11 @@ project's activities.
 rm -rf *.egg*
 
 %build
-%{__python3} setup.py build
+python3 setup.py build
 
 
 %install
-python3 setup.py install --skip-build --root $RPM_BUILD_ROOT
+python3 setup.py install --skip-build --root %{buildroot}
 
 # Install apache configuration file
 mkdir -p %{buildroot}/%{_sysconfdir}/httpd/conf.d/
@@ -80,7 +82,7 @@ mkdir -p %{buildroot}/%{_datadir}/mote
 install -m 644 files/mote.wsgi %{buildroot}/%{_datadir}/mote/mote.wsgi
 
 # Remove bundled font files
-rm -rf %{buildroot}/%{python_sitelib}/mote/static/fonts
+rm -rf %{buildroot}%{python_sitelib}/mote/static/fonts
 
 # Symlink font files
 ln -s /usr/share/fonts/fontawesome %{buildroot}%{python_sitelib}/mote/static/fonts
@@ -99,7 +101,7 @@ install -pm644 files/mote-updater.service \
 %config(noreplace) %{_sysconfdir}/mote/config.pyc
 %config(noreplace) %{_sysconfdir}/mote/config.pyo
 %{_datadir}/%{name}
-%{_datadir}/mote-updater.service
+%{_unitdir}/mote-updater.service
 %{python_sitelib}/%{name}/
 %{python_sitelib}/mote*.egg-info
 %{_bindir}/mote-updater
